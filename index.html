@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Lettre</title>
+
+<style>
+body{
+  background:#ffeef4;
+  font-family:Verdana;
+  padding:20px;
+  text-align:center;
+  position:relative;
+  overflow-x:hidden;
+}
+
+.letter-box{
+  background:white;
+  padding:30px;
+  max-width:600px;
+  margin:0 auto;
+  border-radius:20px;
+  box-shadow:0 0 20px rgba(255,150,200,0.2);
+}
+
+h1{
+  color:#ff5599;
+  margin-bottom:20px;
+}
+
+/* MESSAGE ANIMÉ */
+#typewriter{
+  font-size:18px;
+  color:#5b2d42;
+  min-height:40px;
+  margin-bottom:25px;
+  white-space:pre-wrap;
+}
+
+/* --- POÈME --- */
+.poem{
+  margin-top:20px;
+  padding:18px 20px;
+  border-radius:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,235,245,0.8));
+  border:1px solid rgba(255,90,150,0.25);
+  box-shadow:0 8px 20px rgba(255,120,160,0.15);
+  text-align:left;
+}
+
+.poem p{
+  margin:10px 0;
+  color:#5b2d42;
+  font-size:16px;
+  line-height:1.6;
+  letter-spacing:0.3px;
+  min-height:22px;
+  white-space:pre-wrap;
+}
+
+/* Boutons */
+button{
+  margin-top:20px;
+  padding:10px 20px;
+  border:none;
+  background:#ff78b5;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:16px;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#ff4f9d;
+}
+
+.ghost{
+  background:transparent;
+  border:1.5px solid rgba(255,92,138,0.4);
+  color:#ff5599;
+  margin-left:10px;
+}
+
+/* coeurs flottants */
+.floating{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.floating i{
+  position:absolute;
+  font-style:normal;
+  color:rgba(255,92,138,0.95);
+  opacity:0.9;
+  transform:translateY(0);
+  animation:floatUp linear infinite;
+}
+@keyframes floatUp{
+  from{ transform:translateY(20px) scale(.9); opacity:0 }
+  10%{ opacity:1 }
+  to{ transform:translateY(-160px) scale(1.15); opacity:0 }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="letter-box">
+  <h1>Pour Toi 💗</h1>
+
+  <!-- MESSAGE ANIMÉ PRINCIPAL -->
+  <div id="typewriter"></div>
+
+  <!-- POÈME ANIMÉ -->
+  <div class="poem" id="poem">
+    <p></p><p></p><p></p><p></p>
+    <p></p><p></p><p></p>
+    <p></p><p></p><p></p>
+    <p></p><p></p><p></p>
+    <p></p><p></p>
+  </div>
+
+  <!-- BOUTONS -->
+  <button id="startBtn">Afficher le poème</button>
+  <button id="kissBtn" class="ghost">Envoyer un baiser</button>
+
+  <!-- zone des coeurs flottants -->
+  <div class="floating" id="floating"></div>
+</div>
+
+<script>
+// ------------------------------
+// TEXTES
+// ------------------------------
+const mainMessage = "Même après tout ce temps le cœur de tonton Winner n'a jamais cessé de t'aimer.";
+
+const poemLines = [
+  "Il y a longtemps que nos chemins ne se sont plus croisés,",
+  "Pourtant ton souvenir n’a jamais quitté mon cœur.",
+  "Tu as traversé des tempêtes que peu auraient pu supporter,",
+  "Tu t’es perdue, relevée, changée… devenue quelqu’un de plus fort.",
+
+  "Le passé t’a marqué, oui, mais il n’a pas brisé ta lumière,",
+  "Et les erreurs que tu regrettes ne sont que les traces d’un ancien chemin.",
+  "Je vois celle que tu es devenue, et j’en suis fier, sincèrement.",
+
+  "Si un jour tu trembles, si tu as l’impression d’être seule,",
+  "Si le poids du monde te semble trop lourd à porter,",
+  "Rappelle-toi que je suis là — vraiment là — sans condition.",
+
+  "Tu peux compter sur moi, même quand tu douteras,",
+  "Même quand tu voudras t’éloigner, même si tu m’en empêches,",
+  "Je ne t’abandonnerai pas… ou du moins, je ne t’abandonnerai jamais.",
+
+  "Quoi qu’il arrive, malgré la distance, le silence ou le temps,",
+  "Je continuerai de t’aimer — simplement, profondément, et sans attendre rien."
+];
+
+// ------------------------------------
+// ANIMATION TYPEWRITER (MESSAGE PRINCIPAL)
+// ------------------------------------
+function typeWriterText(text, element, speed = 35){
+    element.textContent = "";
+    let i = 0;
+    function type(){
+        if(i < text.length){
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+    type();
+}
+
+// ------------------------------------
+// ANIMATION POÈME (LIGNE PAR LIGNE + LETTRE PAR LETTRE)
+// ------------------------------------
+function typeWriterPoem(lines, elements, speed = 25){
+    let lineIndex = 0;
+
+    function writeLine(){
+        if(lineIndex >= lines.length) return;
+
+        let text = lines[lineIndex];
+        let el = elements[lineIndex];
+        let i = 0;
+
+        function typeChar(){
+            if(i < text.length){
+                el.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeChar, speed);
+            } else {
+                lineIndex++;
+                setTimeout(writeLine, 200);
+            }
+        }
+
+        typeChar();
+    }
+
+    writeLine();
+}
+
+// ------------------------------
+// Lancement animations
+// ------------------------------
+const typewriterEl = document.getElementById("typewriter");
+const poemEl = document.querySelectorAll("#poem p");
+const startBtn = document.getElementById("startBtn");
+const kissBtn = document.getElementById("kissBtn");
+const floating = document.getElementById("floating");
+
+// Affiche automatiquement le message principal
+typeWriterText(mainMessage, typewriterEl, 35);
+
+// Lancement du poème au clic
+startBtn.onclick = () => {
+    startBtn.style.display = "none";
+    typeWriterPoem(poemLines, poemEl);
+};
+
+// ---------------------------------
+// BOUTON "Envoyer un baiser" -> coeurs flottants
+// ---------------------------------
+function spawnHeart(xPct){
+    const el = document.createElement('i');
+    const size = 12 + Math.random()*22;
+    el.textContent = '❤';
+    el.style.left = (xPct*100) + '%';
+    el.style.bottom = (6 + Math.random()*6) + '%';
+    el.style.fontSize = size + 'px';
+    el.style.animationDuration = (2 + Math.random()*2) + 's';
+    floating.appendChild(el);
+    setTimeout(()=> el.remove(), 3500);
+}
+
+kissBtn.addEventListener('click', ()=>{
+    for(let j=0;j<8;j++){
+        setTimeout(()=> spawnHeart(Math.random()), j*120);
+    }
+    kissBtn.animate([{transform:'scale(1)'},{transform:'scale(.92)'}],{duration:160,iterations:1});
+});
+
+// Permet déclencher aussi au clavier
+kissBtn.addEventListener('keyup', (e)=>{
+    if(e.key === 'Enter' || e.key === ' ') kissBtn.click();
+});
+</script>
+
+</body>
+</html>
